@@ -9,4 +9,4 @@ class Title_Extractor():
         pass
 
     def get_title(self):
-        
+        pass
