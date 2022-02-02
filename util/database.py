@@ -5,71 +5,116 @@ from datetime import date
 
 class Database():
     def __init__(self) -> None:
-        con = sqlite3.connect('scholarship.db')
+        self.db_path = 'scholarship.db'
+        self.create_url_tbl()
+        self.create_scholarship_tbl()
+    
+    def create_url_tbl(self):
+        con = sqlite3.connect(self.db_path)
         curser = con.cursor()
         curser.execute('''CREATE TABLE IF NOT EXISTS url_tbl (
 	        url_id INTEGER PRIMARY KEY,
-	        url TEXT NOT NULL,
-	        crawled INTEGER NOT NULL,
+	        url TEXT UNIQUE NOT NULL,
+	        iscrawled INTEGER NOT NULL,
 	        date_accessed TEXT NOT NULL
         );''')
         con.commit()
         con.close()
 
-    def add(self, url: str, is_crawled: bool):
-        con = sqlite3.connect('scholarship.db')
+    def create_scholarship_tbl(self):
+        con = sqlite3.connect(self.db_path)
         curser = con.cursor()
-        curser.execute("INSERT INTO url_tbl(url, crawled, date_accessed) VALUES (?,?,?)",
-                       (url, is_crawled, str(date.today())))
+        curser.execute('''CREATE TABLE IF NOT EXISTS scholarship_tbl (
+	        schol_id INTEGER PRIMARY KEY,
+	        url TEXT UNIQUE NOT NULL,
+	        date_accessed TEXT NOT NULL,
+            title TEXT NOT NULL,
+            requirements TEXT NOT NULL,
+            amount INTEGER NOT NULL,
+            organization TEXT NOT NULL,
+            deadline TEXT NOT NULL
+        );''')
         con.commit()
         con.close()
-
-    def check_duplicate(self, url:str) -> bool:
+    
+    def insert_url(self, url: str, is_crawled: bool, date_accessed):
+        con = sqlite3.connect(self.db_path)
+        curser = con.cursor()
         try:
-            con = sqlite3.connect('scholarship.db')
-            curser = con.cursor()
-            curser.execute(
-                """SELECT EXISTS(SELECT 1 FROM url_tbl WHERE url=?);""", (url,))
-            my_var = curser.fetchall()
-            con.commit()
-            con.close()
-            return my_var
+            curser.execute(f"""
+            INSERT INTO 
+                url_tbl(url, iscrawled, date_accessed) 
+            VALUES 
+                (?,?,?)""", (url,is_crawled,date_accessed))
         except Exception as e:
-            logging.error('Url: %s',url)
-            logging.error(e)
-            # print('Url: %s',url)
-            # print(e)
-
-
-    def print_all(self):
-        con = sqlite3.connect('scholarship.db')
-        curser = con.cursor()
-        curser.execute("""SELECT * FROM url_tbl;""")
+            print(f"Exception: {e} on url: {url}")
         con.commit()
-        for item in curser.fetchall():
-            print(item)
+        con.close()
+    
+    def insert_scholarship(self, url:str, title:str, reqs:str, amount:int, org:str, deadline:str):
+        con = sqlite3.connect(self.db_path)
+        curser = con.cursor()
+        try:
+            curser.execute(f"""
+            INSERT OR IGNORE INTO 
+                scholarship_tbl(url, date_accessed, title, requirements, amount, organization, deadline) 
+            VALUES
+                ({url},{str(date.today())},{title},{reqs},{amount},{org},{deadline})""",
+                        (url, str(date.today()), title, reqs, amount, org, deadline))
+        except Exception as e:
+            print(f"Exception: {e} on url: {url}")
+        con.commit()
         con.close()
 
-    def del_item(self, url):
-        con = sqlite3.connect('scholarship.db')
+    def delete_url(self, url):
+        con = sqlite3.connect(self.db_path)
         curser = con.cursor()
         curser.execute("""DELETE FROM url_tbl WHERE url=?;""", (url,))
         con.commit()
         con.close()
 
-    def delete_all(self):
-        con = sqlite3.connect('scholarship.db')
+    def delete_all_urls(self):
+        con = sqlite3.connect(self.db_path)
         curser = con.cursor()
         curser.execute("""DELETE FROM url_tbl;""")
         con.commit()
         con.close()
 
-    def set_crawled(self, url):
-        con = sqlite3.connect('scholarship.db')
+    def update_url(self,url, iscrawled, date_accessed):
+        con = sqlite3.connect(self.db_path)
         curser = con.cursor()
-        curser.execute("""UPDATE url_tbl SET crawled=1 WHERE url=?;""", (url,))
+        curser.execute(f"""
+        UPDATE 
+            url_tbl 
+        SET 
+            iscrawled = {iscrawled},
+            date_accessed = {date_accessed}
+        WHERE 
+            url={url};
+            """)
         con.commit()
         con.close()
+    
+    def update_scholarship(self, url, date_accessed, title, requirements, amount, organization, deadline):
+        con = sqlite3.connect(self.db_path)
+        curser = con.cursor()
+        curser.execute(f"""
+        UPDATE 
+            scholarship_tbl 
+        SET 
+	        date_accessed = {date_accessed},
+            title = {title},
+            requirements = {requirements},
+            amount = {amount},
+            organization = {organization},
+            deadline = {deadline}
+        WHERE 
+            url={url};
+        """)
+        con.commit()
+        con.close()
+
+
 
 if __name__ == "__main__":
     database = Database()
@@ -86,4 +131,4 @@ if __name__ == "__main__":
         'https://www.mymozaic.com/monthlyscholarship.php'
     ]
     for item in url_list:
-        database.add(item, False)
+        database.insert_url(item, False, str(date.today()))

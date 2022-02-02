@@ -1,6 +1,6 @@
 from sys import orig_argv
 from util.page_loader import Page_Loader
-from util.scraper_db import Scraper_DB
+from util.a_other_db import Scraper_DB
 from scraper.title_extractor import Title_Extractor
 from scraper.requirement_extractor import Requirement_Extractor
 from scraper.amount_extractor import Amount_Extractor
