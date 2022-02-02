@@ -1,6 +1,4 @@
 from bs4 import BeautifulSoup
-from util.page_loader import Page_Loader
-
 import re
 import json
 # Helpful paper
@@ -10,9 +8,9 @@ import json
 class Scholarship_Validator():
     def __init__(self, soup:BeautifulSoup) -> None:
         self.my_soup = soup
-        with open('schol_whitelist.json', 'r') as f:
+        with open('/data/schol_whitelist.json', 'r') as f:
             self.white_list = json.load(f)
-        with open('schol_blacklist.json', 'r') as f:
+        with open('/data/schol_blacklist.json', 'r') as f:
             self.black_list = json.load(f)
         
     def validate(self) -> bool:
@@ -35,6 +33,7 @@ class Scholarship_Validator():
 
 
 if __name__ == '__main__':
+    from page_loader import Page_Loader
     schol_list = [
         # 'https://www.nitrocollege.com/nitro-scholarship-application?utm_source=cpc&utm_medium=studentscholarships&utm_campaign=studentscholarships.org_student_2K',
         # 'https://www.niche.com/colleges/scholarships/no-essay-scholarship/?utm_source=Fastweb&utm_medium=Referral&utm_campaign=FWnes',
