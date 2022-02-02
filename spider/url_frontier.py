@@ -1,15 +1,11 @@
-import sqlite3
+from util.database import Database
 
 
 class URL_Frontier():
-    def __init__(self) -> None:
-        self.con = sqlite3.connect('scholarship.db')
     
     def get_next_url(self):
-        cur = self.con.cursor()
-        cur.execute("SELECT * FROM url_tbl WHERE crawled='0'")
-        url_list = cur.fetchall()
-        return url_list[0][1]
+        db = Database()
+        return db.select_next_url()
 
 
 

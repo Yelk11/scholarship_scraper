@@ -1,11 +1,12 @@
 import logging
 import sqlite3
 from datetime import date
-
+import os
 
 class Database():
     def __init__(self) -> None:
-        self.db_path = 'scholarship.db'
+        print()
+        self.db_path = os.getcwd() + '/data/scholarship.db'
         self.create_url_tbl()
         self.create_scholarship_tbl()
     
@@ -114,6 +115,17 @@ class Database():
         con.commit()
         con.close()
 
+    def select_next_url(self):
+        con = sqlite3.connect(self.db_path)
+        curser = con.cursor()
+        curser.execute(f"""
+        SELECT 1 FROM  
+            url_tbl 
+        WHERE 
+            iscrawled={False};
+        """)
+        con.commit()
+        con.close()
 
 
 if __name__ == "__main__":
