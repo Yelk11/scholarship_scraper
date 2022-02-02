@@ -1,4 +1,4 @@
-from spider import Crawler
+from crawler import Crawler
 
 def main():
     print('starting scholarship scraper')

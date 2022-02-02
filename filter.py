@@ -1,6 +1,6 @@
 
 
-from util.database import Database
+from database import Database
 
 class URL_Filter():
     def __init__(self) -> None:

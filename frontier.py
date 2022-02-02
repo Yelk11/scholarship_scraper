@@ -1,4 +1,4 @@
-from util.database import Database
+from database import Database
 
 
 class URL_Frontier():

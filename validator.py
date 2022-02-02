@@ -1,16 +1,20 @@
 from bs4 import BeautifulSoup
 import re
 import json
+import os
 # Helpful paper
 # https://luca.ntop.org/LargeScaleWebClassification.pdf
 
 
-class Scholarship_Validator():
+class Validator():
     def __init__(self, soup:BeautifulSoup) -> None:
         self.my_soup = soup
-        with open('/data/schol_whitelist.json', 'r') as f:
+        dirname = os.path.dirname(__file__)
+        white_list_patch = os.path.join(dirname, '../data/schol_whitelist.json')
+        black_list_patch = os.path.join(dirname, '../data/schol_whitelist.json')
+        with open(white_list_patch, 'r') as f:
             self.white_list = json.load(f)
-        with open('/data/schol_blacklist.json', 'r') as f:
+        with open(black_list_patch, 'r') as f:
             self.black_list = json.load(f)
         
     def validate(self) -> bool:
@@ -33,7 +37,7 @@ class Scholarship_Validator():
 
 
 if __name__ == '__main__':
-    from page_loader import Page_Loader
+    from loader import Page_Loader
     schol_list = [
         # 'https://www.nitrocollege.com/nitro-scholarship-application?utm_source=cpc&utm_medium=studentscholarships&utm_campaign=studentscholarships.org_student_2K',
         # 'https://www.niche.com/colleges/scholarships/no-essay-scholarship/?utm_source=Fastweb&utm_medium=Referral&utm_campaign=FWnes',
@@ -63,12 +67,12 @@ if __name__ == '__main__':
     ]
     for url in schol_list:
         loader = Page_Loader(url)
-        validator = Scholarship_Validator(loader.get_soup())
+        validator = Validator(loader.get_soup())
         print("Expected: True, result: ", validator.is_scholarship())
     
     for url in mult_schol_list:
         loader = Page_Loader(url)
-        validator = Scholarship_Validator(loader.get_soup())
+        validator = Validator(loader.get_soup())
         print("Expected: True, result: ", validator.is_multi_scholarship())
     
     # for url in none_list:

@@ -1,9 +1,9 @@
-from util.database import Database
-from spider.url_frontier import URL_Frontier
-from util.page_loader import Page_Loader
-from util.scholarship_validator import Scholarship_Validator
-from spider.url_extractor import URL_Extractor
-from spider.url_filter import URL_Filter
+from database import Database
+from frontier import URL_Frontier
+from loader import Page_Loader
+from validator import Validator
+from url import URL_Extractor
+from filter import URL_Filter
 
 import time
 import logging
@@ -19,7 +19,7 @@ class Crawler():
         if(page_loader.is_loaded()):
             url_extractor = URL_Extractor(soup=page_loader.get_soup(), url=url)
             
-            scholarship_validator = Scholarship_Validator(soup=page_loader.get_soup())
+            scholarship_validator = Validator(soup=page_loader.get_soup())
             url_filter = URL_Filter()
             # get urls
             url_list = url_extractor.extract()
