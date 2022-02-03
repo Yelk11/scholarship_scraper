@@ -14,6 +14,7 @@ class Page_Loader(str):
         self.load_page(url)
 
     def load_page(self, url) -> bool:
+        # Different user-agent profiles
         UAS = ("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1", 
             "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0",
@@ -21,7 +22,7 @@ class Page_Loader(str):
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36",
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",
         )
-        ua = UAS[random.randrange(len(UAS))]
+        ua = UAS[random.randrange(len(UAS))] # Pick random user-agent
         headers = {'user-agent': ua}
         session = requests.Session()
         retry = Retry(connect=3, backoff_factor=0.5)    
@@ -34,8 +35,6 @@ class Page_Loader(str):
             self._is_loaded = True
         except Exception as e:
             logging.exception(e)
-            # print(url)
-            # print(e)
             self._is_loaded = False
         
             
@@ -43,7 +42,10 @@ class Page_Loader(str):
         return self._is_loaded 
             
     def get_soup(self) -> BeautifulSoup:
-        return self.soup
+        if self._is_loaded:
+            return self.soup
+        else:
+            return None
     
     def tag_visible(self, element):
         if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -53,10 +55,12 @@ class Page_Loader(str):
         return True
     
     def get_text(self) -> str:
-        
-        texts = self.soup.findAll(text=True)
-        visible_texts = filter(self.tag_visible, texts)  
-        return u" ".join(t.strip() for t in visible_texts)
+        if self._is_loaded:
+            texts = self.soup.findAll(text=True)
+            visible_texts = filter(self.tag_visible, texts)  
+            return u" ".join(t.strip() for t in visible_texts)
+        else:
+            return None
     
     
     
