@@ -21,16 +21,11 @@ class Validator():
         return self.is_scholarship() or self.is_multi_scholarship()
 
     def is_scholarship(self) -> bool:
+        
         for item in self.white_list["best"]:
-            print('checking: ', item)
             print(len(self.my_soup.find_all(text=re.compile(item))))
         return len(self.my_soup.findAll(text=re.compile('scholarship'))) > 0
     
-    def is_multi_scholarship(self) -> bool:
-        for item in self.white_list["best"]:
-            print('checking: ', item)
-            print(len(self.my_soup.find_all(text=re.compile(item))))
-        pass
         
         
 

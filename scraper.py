@@ -1,10 +1,9 @@
-from sys import orig_argv
 from loader import Page_Loader
-from title import Title_Extractor
+from collector import Title_Extractor
 from requirement import Requirement_Extractor
-from amount import Amount_Extractor
-from organization import Organization_Extractor
-from deadline import Deadline_Extractor
+from collector import Amount_Extractor
+from collector import Organization_Extractor
+from collector import Deadline_Extractor
 from database import Database
 
 class Scraper():
