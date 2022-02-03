@@ -10,11 +10,11 @@ class Validator():
     def __init__(self, soup:BeautifulSoup) -> None:
         self.my_soup = soup
         dirname = os.path.dirname(__file__)
-        white_list_patch = os.path.join(dirname, '../data/schol_whitelist.json')
-        black_list_patch = os.path.join(dirname, '../data/schol_whitelist.json')
-        with open(white_list_patch, 'r') as f:
+        white_list_path = os.path.join(dirname, '/data/schol_whitelist.json')
+        black_list_path = os.path.join(dirname, '/data/schol_whitelist.json')
+        with open(white_list_path, 'r') as f:
             self.white_list = json.load(f)
-        with open(black_list_patch, 'r') as f:
+        with open(black_list_path, 'r') as f:
             self.black_list = json.load(f)
         
     def validate(self) -> bool:
@@ -25,6 +25,8 @@ class Validator():
         for item in self.white_list["best"]:
             print(len(self.my_soup.find_all(text=re.compile(item))))
         return len(self.my_soup.findAll(text=re.compile('scholarship'))) > 0
+    
+
     
         
         
