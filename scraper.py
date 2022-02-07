@@ -1,6 +1,6 @@
 from loader import Page_Loader
 from collector import Title_Extractor
-from requirement import Requirement_Extractor
+from collector import Requirement_Extractor
 from collector import Amount_Extractor
 from collector import Organization_Extractor
 from collector import Deadline_Extractor
@@ -20,8 +20,6 @@ class Scraper():
         db.insert_scholarship(title=title_extr.extract, req=req_extr.extract(), amount=amnt_extr.extract(), org=org_extr.extract(), deadline=deadline_extr.extract())
         
     def scrape_main(self):
-        database = Database()
-        
         self.scrape()
 
 

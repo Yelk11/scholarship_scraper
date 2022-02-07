@@ -46,3 +46,10 @@ class URL_Extractor():
         for item in self.my_soup.find_all('a', href=True):
             new_list.append(item['href'])
         return new_list
+
+class Requirement_Extractor():
+    def __init__(self, soup:BeautifulSoup) -> None:
+        self.requirements = []
+    
+    def extract(self):
+        pass

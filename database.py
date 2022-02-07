@@ -60,7 +60,7 @@ class Database():
             INSERT OR IGNORE INTO 
                 scholarship_tbl(url, date_accessed, title, requirements, amount, organization, deadline) 
             VALUES
-                ({url},{str(date.today())},{title},{reqs},{amount},{org},{deadline})""",
+                (?,?,?,?,?,?,?)""",
                         (url, str(date.today()), title, reqs, amount, org, deadline))
         except Exception as e:
             print(f"Exception: {e} on url: {url}")
@@ -88,11 +88,11 @@ class Database():
         UPDATE 
             url_tbl 
         SET 
-            iscrawled = {iscrawled},
-            date_accessed = {date_accessed}
+            iscrawled = ?,
+            date_accessed = ?
         WHERE 
-            url={url};
-            """)
+            url=?;
+            """, (iscrawled, date_accessed, url))
         con.commit()
         con.close()
     

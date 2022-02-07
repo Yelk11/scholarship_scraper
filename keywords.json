@@ -1,8 +1,6 @@
 {
-    "high":[
-        "scholarship"
-    ],
-    "medium":[
+    "keywords":[
+        "scholarship",
         "apply",
         "student",
         "students",
@@ -22,9 +20,7 @@
         "awards",
         "amount",
         "needbased",
-        "education"
-    ],
-    "low":[
+        "education",
         "winner"
     ]
 }

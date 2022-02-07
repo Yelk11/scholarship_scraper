@@ -33,7 +33,9 @@ class Page_Loader(str):
             self.html_content = session.get(url, headers=headers).content
             self.soup = BeautifulSoup(self.html_content, "html.parser")
             self._is_loaded = True
+            print(f'successfully loaded {url}')
         except Exception as e:
+            print(f'failed to load {url}')
             logging.exception(e)
             self._is_loaded = False
         

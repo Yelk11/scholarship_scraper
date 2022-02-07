@@ -2,36 +2,47 @@ from bs4 import BeautifulSoup
 import re
 import json
 import os
+import numpy as np
 # Helpful paper
 # https://luca.ntop.org/LargeScaleWebClassification.pdf
 
+'''
+Notes on how to implement validator
+
+simple: Words in 'high' have to be there, and you must have at least 10 'medium' words
+
+confidence interval: 
+'''
 
 class Validator():
-    def __init__(self, soup:BeautifulSoup) -> None:
-        self.my_soup = soup
-        dirname = os.path.dirname(__file__)
-        white_list_path = os.path.join(dirname, '/data/schol_whitelist.json')
-        black_list_path = os.path.join(dirname, '/data/schol_whitelist.json')
-        with open(white_list_path, 'r') as f:
-            self.white_list = json.load(f)
-        with open(black_list_path, 'r') as f:
-            self.black_list = json.load(f)
-        
+    def __init__(self, text:str) -> None:
+        self.text = text
+        with open('keywords.json', 'r') as f:
+            self.keywords = json.load(f)
+    
     def validate(self) -> bool:
-        return self.is_scholarship() or self.is_multi_scholarship()
+        x0 = self.extract_keywords(self.text)
+        perc = self.percentage(len(x0), len(self.keywords['keywords']))
+        return perc
 
-    def is_scholarship(self) -> bool:
-        
-        for item in self.white_list["best"]:
-            print(len(self.my_soup.find_all(text=re.compile(item))))
-        return len(self.my_soup.findAll(text=re.compile('scholarship'))) > 0
+    def percentage(self, x1, x2):
+        try:
+            ans = float(x1)/float(x2)
+            ans=ans*100
+        except:
+            return 0
+        else:
+            return ans
     
+    def extract_keywords(self, text):
+        new_list = []
+        for item in text:
+            if item in self.keywords['keywords'] and not new_list:
+                new_list.append(item)
+        return new_list
 
-    
+
         
-        
-
-
 
 if __name__ == '__main__':
     from loader import Page_Loader
@@ -64,16 +75,16 @@ if __name__ == '__main__':
     ]
     for url in schol_list:
         loader = Page_Loader(url)
-        validator = Validator(loader.get_soup())
-        print("Expected: True, result: ", validator.is_scholarship())
+        validator = Validator(loader.get_text())
+        print("Expected: True, result: ", validator.validate())
     
     for url in mult_schol_list:
         loader = Page_Loader(url)
-        validator = Validator(loader.get_soup())
-        print("Expected: True, result: ", validator.is_multi_scholarship())
+        validator = Validator(loader.get_text())
+        print("Expected: True, result: ", validator.validate())
     
-    # for url in none_list:
-    #     loader = Page_Loader(url)
-    #     validator = Scholarship_Validator(loader.get_soup())
-    #     print("Expected: False, result: ", validator.validate())
+    for url in none_list:
+        loader = Page_Loader(url)
+        validator = Validator(loader.get_text())
+        print("Expected: False, result: ", validator.validate())
     
