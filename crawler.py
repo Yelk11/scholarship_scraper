@@ -19,7 +19,7 @@ class Crawler():
         page_loader = Page_Loader(url)
         
         if(page_loader.is_loaded()):
-            url_extractor = URL_Extractor(page_loader.get_soup(), url=url)
+            url_extractor = URL_Extractor(page_loader.get_soup(), url)
             validator = Validator(page_loader.get_text())
             #  if it is a scholarship, scrape it
             if validator.validate():
@@ -29,12 +29,12 @@ class Crawler():
             url_list = url_extractor.extract()
             # store urls
             if len(url_list) > 1:
-                for url in url_list:
-                    self.db.insert_url(url, False, str(date.today()))
+                for item in url_list:
+                    self.db.insert_url(item, False, str(date.today()))
             else:
                 self.db.insert_url(url_list, False, str(date.today()))
-            # TODO iscrawled flag is not being updated in database
-            self.db.update_url(url, 1, str(date.today()))
+            
+            self.db.update_url(url, True, str(date.today()))
 
         
     def main_loop(self, starting_url):
@@ -49,3 +49,6 @@ class Crawler():
                 break
 
 
+if __name__ == "__main__":
+    c = Crawler()
+    c.crawl('https://joinjuno.com/scholarship/january-2022-scholarship')
