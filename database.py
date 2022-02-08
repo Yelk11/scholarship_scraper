@@ -47,6 +47,8 @@ class Database():
                 url_tbl(url, iscrawled, date_accessed) 
             VALUES 
                 (?,?,?)""", (url,is_crawled,date_accessed))
+        except sqlite3.IntegrityError:
+            pass
         except Exception as e:
             print(f"Exception: {e} on url: {url}")
         con.commit()
@@ -129,18 +131,20 @@ class Database():
 
 
 if __name__ == "__main__":
-    database = Database()
-    url_list = [
-        'https://www.nitrocollege.com/nitro-scholarship-application',
-        'https://www.nitrocollege.com/nitro-scholarship-application',
-        'https://calvinrosser.com/scholarships/buena-amistad-scholarship/',
-        'https://joinjuno.com/scholarship/january-2022-scholarship',
-        'https://www.keepgoingforward.org/money-isnt-everything',
-        'https://calvinrosser.com/scholarships/financial-freedom/',
-        'https://calvinrosser.com/scholarships/a-bold-life-scholarship/',
-        'https://www.nitrocollege.com/nitro-scholarship-application/1k',
-        'https://calvinrosser.com/scholarships/a-green-world-scholarship/',
-        'https://www.mymozaic.com/monthlyscholarship.php'
-    ]
-    for item in url_list:
-        database.insert_url(item, False, str(date.today()))
+    db = Database()
+    # url_list = [
+    #     'https://www.nitrocollege.com/nitro-scholarship-application',
+    #     'https://www.nitrocollege.com/nitro-scholarship-application',
+    #     'https://calvinrosser.com/scholarships/buena-amistad-scholarship/',
+    #     'https://joinjuno.com/scholarship/january-2022-scholarship',
+    #     'https://www.keepgoingforward.org/money-isnt-everything',
+    #     'https://calvinrosser.com/scholarships/financial-freedom/',
+    #     'https://calvinrosser.com/scholarships/a-bold-life-scholarship/',
+    #     'https://www.nitrocollege.com/nitro-scholarship-application/1k',
+    #     'https://calvinrosser.com/scholarships/a-green-world-scholarship/',
+    #     'https://www.mymozaic.com/monthlyscholarship.php'
+    # ]
+    # for item in url_list:
+    #     db.insert_url(item, False, str(date.today()))
+    db.delete_all_urls()
+

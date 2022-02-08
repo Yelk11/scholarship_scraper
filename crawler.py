@@ -14,11 +14,13 @@ class Crawler():
         self.db = Database()
         self.scraper = Scraper()
     def crawl(self, url:str):
+        print(f'crawling {url}')
         page_loader = Page_Loader(url)
         
         if(page_loader.is_loaded()):
             url_extractor = URL_Extractor(page_loader.get_soup(), url=url)
             validator = Validator(page_loader.get_text())
+            #  if it is a scholarship, scrape it
             if validator.validate():
                 print(f'{url} is a scholarship')
                 self.scraper.scrape(page_loader)
@@ -30,7 +32,7 @@ class Crawler():
                     self.db.insert_url(url, False, str(date.today()))
             else:
                 self.db.insert_url(url_list, False, str(date.today()))
-
+            # TODO iscrawled flag is not being updated in database
             self.db.update_url(url, True, str(date.today()))
 
         
