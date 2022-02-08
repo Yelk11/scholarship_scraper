@@ -1,12 +1,12 @@
 from database import Database
 from loader import Page_Loader
 from validator import Validator
-from collector import URL_Extractor
 from scraper import Scraper
 
 import time
 import logging
 from datetime import date
+from urllib.parse import urljoin
 
 class Crawler():
     def __init__(self) -> None:
@@ -19,14 +19,14 @@ class Crawler():
         page_loader = Page_Loader(url)
         
         if(page_loader.is_loaded()):
-            url_extractor = URL_Extractor(page_loader.get_soup(), url)
+            
             validator = Validator(page_loader.get_text())
             #  if it is a scholarship, scrape it
             if validator.validate():
                 print(f'{url} is a scholarship')
                 self.scraper.scrape(page_loader)
             # get urls
-            url_list = url_extractor.extract()
+            url_list = self.extract_url(page_loader.get_soup(), url)
             # store urls
             if len(url_list) > 1:
                 for item in url_list:
@@ -36,7 +36,16 @@ class Crawler():
             
             self.db.update_url(url, True, str(date.today()))
 
-        
+    def extract_url(self, soup, url) -> list[str]:
+        new_list = []
+        for link in self.soup.find_all('a'):
+            path = link.get('href')
+            if path and path.startswith('/'):
+                path = urljoin(self.url, path)
+            print(path)
+            new_list.append(path)
+        return new_list
+    
     def main_loop(self, starting_url):
         self.crawl(starting_url)
         while True:

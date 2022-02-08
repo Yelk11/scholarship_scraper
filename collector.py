@@ -1,74 +1,39 @@
 from bs4 import BeautifulSoup
 import re
-from urllib.parse import urljoin
 
+from loader import Page_Loader
+
+
+
+
+class Collector():
+    def __init__(self, soup:BeautifulSoup):
+        self.soup = soup
 # TODO: implement Title extractor
-class Title_Extractor():
-    def __init__(self, soup:BeautifulSoup) -> None:
-        self.my_soup = soup
-    
-    def extract(self):
-        pass
-
     def get_title(self):
         pass
 # TODO implement Deadline Extractor
-class Deadline_Extractor():
-    def __init__(self) -> None:
-        self.deadline = ''
-    def extract(self):
+    def get_deadline(self):
         pass
 # TODO implement org extractor
-class Organization_Extractor:
-    def __init__(self, soup:BeautifulSoup) -> None:
-        self.soup = soup
-
-    def extract():
+    def get_org(self):
         pass
-# TODO implement amount extractor
-class Amount_Extractor():
-    def __init__(self, soup:BeautifulSoup) -> None:
-        self.soup = soup
-        self.amount = 0
-    
-    def extract(self) -> int:
+    def get_amount(self) -> int:
         amount_list = self.soup.find_all(['strong','p', 'h1', 'h2', 'h3', 'span', 'b'])
         results = re.search('\$\d+(,|\d)\d+', str(amount_list))
         if results:
             return results.group(0)
-        return self.amount
-
-# TODO handle /index.html type urls by adding appening to base url
-class URL_Extractor():
-    def __init__(self, soup:BeautifulSoup, url:str) -> None:
-        self.URL_list = []
-        self.my_soup = soup
-        self.url = url
-    
-    def extract(self) -> list[str]:
-        new_list = []
-        for link in self.my_soup.find_all('a'):
-            path = link.get('href')
-            if path and path.startswith('/'):
-                path = urljoin(self.url, path)
-            print(path)
-            new_list.append(path)
-        return new_list
-        # new_list = []
-        # for item in self.my_soup.find_all('a', 
-        #                   attrs={'href': re.compile("^https://")}):
-        #     new_list.append(self.url_builder(item['href']))
-        #     print(self.url_builder(item['href']))
-        # return new_list
-    
-        
-
-
-
-# TODO implement req extractor
-class Requirement_Extractor():
-    def __init__(self, soup:BeautifulSoup) -> None:
-        self.requirements = []
-    
-    def extract(self):
+        else:
+            return -1
+    def get_requirements(self):
         pass
+
+if __name__ == '__main__':
+    loader = Page_Loader('https://calvinrosser.com/scholarships/a-green-world-scholarship/')
+    col = Collector(loader.get_soup())
+    print(col.get_title())
+    print(col.get_amount())
+    print(col.get_deadline())
+    print(col.get_org())
+    print(col.get_requirements())
+
