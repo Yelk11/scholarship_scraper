@@ -13,6 +13,7 @@ class Crawler():
         logging.basicConfig(filename='crawler.log', encoding='utf-8', level=logging.DEBUG)
         self.db = Database()
         self.scraper = Scraper()
+    
     def crawl(self, url:str):
         print(f'crawling {url}')
         page_loader = Page_Loader(url)
@@ -33,7 +34,7 @@ class Crawler():
             else:
                 self.db.insert_url(url_list, False, str(date.today()))
             # TODO iscrawled flag is not being updated in database
-            self.db.update_url(url, True, str(date.today()))
+            self.db.update_url(url, 1, str(date.today()))
 
         
     def main_loop(self, starting_url):

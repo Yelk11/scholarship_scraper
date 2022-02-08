@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import re
+from urllib.parse import urljoin
 
 # TODO: implement Title extractor
 class Title_Extractor():
@@ -36,6 +37,7 @@ class Amount_Extractor():
         if results:
             return results.group(0)
         return self.amount
+
 # TODO handle /index.html type urls by adding appening to base url
 class URL_Extractor():
     def __init__(self, soup:BeautifulSoup, url:str) -> None:
@@ -45,17 +47,21 @@ class URL_Extractor():
     
     def extract(self) -> list[str]:
         new_list = []
-        for item in self.my_soup.find_all('a', 
-                          attrs={'href': re.compile("^https://")}):
-            new_list.append(self.url_builder(item['href']))
-            print(self.url_builder(item['href']))
+        for link in self.my_soup.find_all('a'):
+            path = link.get('href')
+            if path and path.startswith('/'):
+                path = urljoin(self.url, path)
+            print(path)
+            new_list.append(path)
         return new_list
+        # new_list = []
+        # for item in self.my_soup.find_all('a', 
+        #                   attrs={'href': re.compile("^https://")}):
+        #     new_list.append(self.url_builder(item['href']))
+        #     print(self.url_builder(item['href']))
+        # return new_list
     
-    def url_builder(self, link:str):
-        if link.startswith('/'):
-            return self.url + link
-        else:
-            return link
+        
 
 
 

@@ -121,13 +121,15 @@ class Database():
         con = sqlite3.connect(self.db_path)
         curser = con.cursor()
         curser.execute(f"""
-        SELECT 1 FROM  
+        SELECT * FROM  
             url_tbl 
         WHERE 
-            iscrawled={False};
+            iscrawled=0;
         """)
+        rows = curser.fetchone()
         con.commit()
         con.close()
+        return rows[1]
 
 
 if __name__ == "__main__":
@@ -146,5 +148,5 @@ if __name__ == "__main__":
     # ]
     # for item in url_list:
     #     db.insert_url(item, False, str(date.today()))
-    db.delete_all_urls()
+    print(db.update_url('https://www.nitrocollege.com/nitro-scholarship-application', 1,str(date.today())))
 
