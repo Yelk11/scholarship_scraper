@@ -3,16 +3,12 @@ import re
 import json
 import os
 import numpy as np
+
+
 # Helpful paper
 # https://luca.ntop.org/LargeScaleWebClassification.pdf
 
-'''
-Notes on how to implement validator
 
-simple: Words in 'high' have to be there, and you must have at least 10 'medium' words
-
-confidence interval: 
-'''
 
 class Validator():
     def __init__(self, text:str) -> None:
@@ -27,22 +23,21 @@ class Validator():
 
     def percentage(self, x1, x2):
         try:
+            print(f"{x1} : {x2}")
             ans = float(x1)/float(x2)
             ans=ans*100
         except:
-            return 0
+            return 0 # for div by 0 errors
         else:
             return ans
     
-    def extract_keywords(self, text):
+    def extract_keywords(self, text:str):
         new_list = []
-        for item in text:
-            if item in self.keywords['keywords'] and not new_list:
+        for item in text.split():
+            if item in self.keywords['keywords'] and item not in new_list:
                 new_list.append(item)
         return new_list
 
-
-        
 
 if __name__ == '__main__':
     from loader import Page_Loader
@@ -58,31 +53,34 @@ if __name__ == '__main__':
         # 'https://www.fastweb.com/college-scholarships/scholarships/108173-rob-johnson-memorial-scholarship',
         # 'https://www.fastweb.com/college-scholarships/scholarships/108190-jennings-coe-family-scholarship',
         # 'https://www.fastweb.com/college-scholarships/scholarships/113860-adam-andrews-memorial-scholarship',
-        'https://www.fastweb.com/college-scholarships/scholarships/113861-athletic-scholarship-howard-college'
+        # 'https://www.fastweb.com/college-scholarships/scholarships/113861-athletic-scholarship-howard-college'
 
     ]
     mult_schol_list = [
-        # 'https://finaid.org/scholarships/',
-        # 'https://studentscholarships.org',
-        # 'https://signup.collegeboard.org/scholarship-search/',
-        # 'https://bold.org/scholarships/easy-scholarships-list/',
-        # 'https://www.fastweb.com',
+        'https://finaid.org/scholarships/',
+        'https://studentscholarships.org',
+        'https://signup.collegeboard.org/scholarship-search/',
+        'https://bold.org/scholarships/easy-scholarships-list/',
+        'https://www.fastweb.com',
         'https://www.fastweb.com/college-scholarships/articles/scholarships-for-average-students'
     ]
     none_list = [
-        'https://studentaid.gov/understand-aid/types/scholarships',
+        # 'https://studentaid.gov/understand-aid/types/scholarships',
 
     ]
+    # one scholarship
     for url in schol_list:
         loader = Page_Loader(url)
         validator = Validator(loader.get_text())
         print("Expected: True, result: ", validator.validate())
     
+    #  list of scholarships
     for url in mult_schol_list:
         loader = Page_Loader(url)
         validator = Validator(loader.get_text())
         print("Expected: True, result: ", validator.validate())
     
+    # no scholarship
     for url in none_list:
         loader = Page_Loader(url)
         validator = Validator(loader.get_text())
